@@ -1,0 +1,67 @@
+<!-- navbar.html -->
+<style>
+    /* Styling the nav container */
+    nav {
+        background-color: #333; /* Dark background for the navbar */
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        
+    }
+    #name { color: #fff;}
+    #logo { background-image: '/images/cc-logo.png';}
+
+    /* Remove default list styling */
+    nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex; /* Makes the list items appear in a row (horizontal) */
+        justify-content: right; /* Centers the list items horizontally */
+    }
+
+    /* Styling each list item */
+    nav ul li {
+        margin: 0 15px; /* Adds space between menu items */
+    }
+
+    /* Styling the links */
+    nav ul li a {
+        text-decoration: none;
+        color: #fff; /* White text */
+        font-size: 16px;
+        font-family: 'Arial', sans-serif;
+        padding: 10px 15px;
+        transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover effect */
+    }
+
+    /* Hover effect for the links */
+    nav ul li a:hover {
+        background-color: #555; /* Darker background on hover */
+        color: #f1f1f1; /* Light gray text color on hover */
+        border-radius: 3px;
+    }
+
+    /* Active link styling (optional) */
+    nav ul li a.active {
+        background-color: #00796b; /* Highlight color for active page */
+        color: #fff;
+        border-radius: 3px;
+    }
+</style>
+<nav>
+    <div id="name">
+        <H2><img src="./images/cc-logo.png" > Caregiver Companion</H2>
+        <h4>Get help when humans can't be there for you</h4>
+
+    </div>
+    <ul>
+   
+      <li><a href="/">Home - CareGiver lite</a></li>
+      <li><a href="/login">CareGiver Personal</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/services">Services</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/reg">Register or Login</a></li>
+    </ul>
+  </nav>

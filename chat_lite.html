@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Caregiving Companion</title>
+    <style>
+        /* Container for the chat window */
+        .chat-window {
+            width: 80%;
+            max-width: 600px;
+            margin: auto;
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+        }
+    
+        /* Individual messages */
+        .message {
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 75%;
+            display: inline-block;
+            line-height: 1.5;
+            font-size: 14px;
+            position: relative; /* for icon positioning */
+        }
+    
+        /* Messages from the user */
+        .message.user {
+            background-color: #e0f7fa;
+            color: #00796b;
+            text-align: right;
+            float: right;
+            border-radius: 10px 10px 0px 10px;
+        }
+    
+        /* Messages from the assistant */
+        .message.assistant {
+            background-color: #f1f1f1;
+            color: #333;
+            text-align: left;
+            float: left;
+            border-radius: 10px 10px 10px 0px;
+        }
+    
+        /* Icon positioning */
+        .message.user::before,
+        .message.assistant::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+        }
+    
+        /* Icon for user messages */
+        .message.user::before {
+            content: '\f007'; /* User icon */
+            font-family: 'FontAwesome';
+            left: -40px;
+            color: #00796b;
+        }
+    
+        /* Icon for assistant messages */
+        .message.assistant::before {
+            content: '\f086'; /* Chatbot or assistant icon */
+            font-family: 'FontAwesome';
+            right: -40px;
+            color: #333;
+        }
+    
+        /* Clearfix to ensure float elements don't break the layout */
+        .chat-window::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    
+        /* Scrollbar styling */
+        .chat-window::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-window::-webkit-scrollbar-thumb {
+            background-color: #cfcfcf;
+            border-radius: 10px;
+        }
+    
+        /* Ensure the chat window has a smooth scrolling effect */
+        .chat-window {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <h1>Chat Caregiving Lite</h1>
+    
+    <div class="chat-window" id="chatWindow"></div>
+
+<input type="text" id="userInput" placeholder="Type your prompt here" style="width: 80%;">
+<button id="submitButton">Submit</button>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chatWindow = document.getElementById('chatWindow');
+        const userInput = document.getElementById('userInput');
+
+        // Load previous chat history on page load
+        fetch('/chat', {method: 'GET'}).then(response => response.json()).then(data => {
+            if (data.history) {
+                data.history.forEach(msg => appendMessage(msg.role, msg.content));
+            }
+        });
+
+        // Function to handle submitting the input (on click or Enter key)
+        async function submitInput() {
+            const userInputValue = userInput.value;
+            if (userInputValue.trim() === "") return;  // Ignore empty inputs
+
+            // Send user input to server
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: userInputValue })
+            });
+
+            const data = await response.json();
+
+            // Append user's and assistant's messages to chat window
+            appendMessage('user', userInputValue);
+            appendMessage('assistant', data.response);
+
+            userInput.value = '';  // Clear input field
+        }
+
+        // Trigger submit when submit button is clicked
+        document.getElementById('submitButton').addEventListener('click', submitInput);
+
+        // Trigger submit when "Enter" key is pressed in the input field
+        userInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();  // Prevent form submission or other default actions
+                submitInput();  // Call the submit function
+            }
+        });
+
+        // Function to append messages to the chat window
+        function appendMessage(role, message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', role);
+            messageElement.textContent = message;
+            chatWindow.appendChild(messageElement);
+            chatWindow.scrollTop = chatWindow.scrollHeight;  // Scroll to bottom
+        }
+    });
+</script>
+{% include 'footer.html' %}
+</body>
+</html>

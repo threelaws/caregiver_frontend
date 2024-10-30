@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caregiver Companion Lite</title>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <h1>Caregiver Companion Lite</h1>
+    {% include 'home.html' %}
+    
+    <input type="text" id="userInput" placeholder="Type your prompt here">
+    <button id="submitButton">Submit</button>
+    <p>Response: <span id="response"></span></p>
+
+    <script>
+        document.getElementById('submitButton').addEventListener('click', async function() {
+            const userInput = document.getElementById('userInput').value;
+            const responseElement = document.getElementById('response');
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ prompt: userInput })
+                });
+                const data = await response.json();
+                responseElement.textContent = data.response;
+            } catch (error) {
+                console.error('Error:', error);
+                responseElement.textContent = 'An error occurred';
+            }
+        });
+    </script>
+     {% include 'footer.html' %}
+</body>
+</html>
